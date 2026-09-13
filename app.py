@@ -69,44 +69,44 @@ async def alexa_endpoint(request: Request):
 
     if request_type == "IntentRequest":
 
-    intent = data.get("request", {}).get("intent", {})
-    intent_name = intent.get("name")
+        intent = data.get("request", {}).get("intent", {})
+        intent_name = intent.get("name")
 
-    if intent_name == "AskAIIntent":
+        if intent_name == "AskAIIntent":
 
-        slots = intent.get("slots", {})
-        question = slots.get("question", {}).get("value")
+            slots = intent.get("slots", {})
+            question = slots.get("question", {}).get("value")
 
-        if not question:
-            answer = "ما سمعت السؤال بوضوح."
-        else:
-            try:
-                response = client.responses.create(
-                    model="gpt-5.6-luna",
-                    instructions=(
-                        "أنت مساعد صوتي عربي اسمه سمارت. "
-                        "أجب بالعربية باختصار وبأسلوب طبيعي. "
-                        "لا تستخدم Markdown لأن Alexa ستقرأ الإجابة صوتياً."
-                    ),
-                    input=question
-                )
+            if not question:
+                answer = "ما سمعت السؤال بوضوح."
+            else:
+                try:
+                    response = client.responses.create(
+                        model="gpt-5.6-luna",
+                        instructions=(
+                            "أنت مساعد صوتي عربي اسمه سمارت. "
+                            "أجب بالعربية باختصار وبأسلوب طبيعي. "
+                            "لا تستخدم Markdown لأن Alexa ستقرأ الإجابة صوتياً."
+                        ),
+                        input=question
+                    )
 
-                answer = response.output_text
+                    answer = response.output_text
 
-            except Exception as e:
-                print(e)
-                answer = "عذراً، صار خطأ أثناء الاتصال بالذكاء الاصطناعي."
+                except Exception as e:
+                    print(e)
+                    answer = "عذراً، صار خطأ أثناء الاتصال بالذكاء الاصطناعي."
 
-        return {
-            "version": "1.0",
-            "response": {
-                "outputSpeech": {
-                    "type": "PlainText",
-                    "text": answer
-                },
-                "shouldEndSession": False
+            return {
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": answer
+                    },
+                    "shouldEndSession": False
+                }
             }
-        }
 
     return {
         "version": "1.0",
